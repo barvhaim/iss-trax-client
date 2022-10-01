@@ -16,6 +16,7 @@ $(document).ready(function () {
     pollingInterval = setInterval(function () {
         fetchISSLocation(function (data) {
             updateISSModel(data.latitude, data.longitude, data.altitude);
+            drawISSShadow(data.latitude, data.longitude);
         });
         fetchGroundStations(function (data) {
             drawGroundStations(data);
@@ -33,11 +34,10 @@ var selectedPlacemarkLayer = null;
 var ISSModelLayer = null;
 var historyISSData = null;
 var groundStationsLayer = null;
+var shapeLayer = null;
 
 function main() {
     renderEarth();
-
-    // renderGroundStations();
 
     fetchGroundStations(function (data) {
         drawGroundStations(data);
@@ -45,13 +45,29 @@ function main() {
 
     fetchISSLocation(function (data) {
         drawISSModelAtPosition(data.latitude, data.longitude, data.altitude);
+        drawISSShadow(data.latitude, data.longitude);
         setLookingAtLocation(data.latitude, data.longitude, true);
 
     });
 }
 
 function drawISSShadow (latitude, longitude) {
+    if (shapeLayer) {
+        wwd.removeLayer(shapeLayer);
+    }
+    shapeLayer = new WorldWind.RenderableLayer("ISS Shadow");
+    wwd.addLayer(shapeLayer);
 
+    var attributes = new WorldWind.ShapeAttributes(null);
+    attributes.outlineColor = WorldWind.Color.BLUE;
+    attributes.interiorColor = new WorldWind.Color(0, 1, 1, 0.5);
+
+    var highlightAttributes = new WorldWind.ShapeAttributes(attributes);
+    highlightAttributes.interiorColor = new WorldWind.Color(1, 1, 1, 1);
+
+    var circle = new WorldWind.SurfaceCircle(new WorldWind.Location(latitude, longitude), 100e3, attributes);
+    circle.highlightAttributes = highlightAttributes;
+    shapeLayer.addRenderable(circle);
 }
 
 function updateISSShape (latitude, longitude) {
@@ -308,6 +324,7 @@ function historySlidingBarListener () {
         currentISSLocation.alt = alt;
 
         updateISSModel(lat, lng, alt);
+        drawISSShadow(lat, lng);
         setLookingAtLocation(lat, lng);
     }
 }
@@ -346,7 +363,7 @@ function drawISSModelAtPosition (latitude, longitude, altitude) {
     var config = {dirPath: 'images/'};
     var colladaLoader = new WorldWind.ColladaLoader(position, config);
     colladaLoader.load("iss.dae", function (colladaModel) {
-        colladaModel.scale = 2000;
+        colladaModel.scale = 1500;
         colladaModel.xRotation = 0;
         colladaModel.yRotation = 0;
         colladaModel.zRotation = 0;
