@@ -76,9 +76,9 @@ function updateISSModel (latitude, longitude, altitude) {
     currentISSLocation.alt = altitude;
     if (ISSModelLayer && ISSModelLayer.renderables.length > 0) {
         ISSModelLayer.renderables[0].position = new WorldWind.Position(latitude, longitude, altitude * 1000 * ALT_VIZ_FACTOR);
-        ISSModelLayer.renderables[0].xRotation = ISSModelLayer.renderables[0].xRotation + .1 % 360;
-        ISSModelLayer.renderables[0].yRotation = ISSModelLayer.renderables[0].yRotation + .1 % 360;
-        ISSModelLayer.renderables[0].zRotation = ISSModelLayer.renderables[0].zRotation + .1 % 360;
+        ISSModelLayer.renderables[0].xRotation = -latitude + 90 + 15;
+        ISSModelLayer.renderables[0].yRotation = 0;
+        ISSModelLayer.renderables[0].zRotation = longitude + 90;
         wwd.redraw();
     }
 }
@@ -119,7 +119,7 @@ function setLookingAtLocation (latitude, longitude, isFirstTime=false) {
     if (isFirstTime){
         wwd.navigator.tilt = 60;
         wwd.navigator.heading = 60;
-        wwd.navigator.range = 4e6;
+        wwd.navigator.range = 3e6;
     }
     wwd.redraw();
 }
@@ -367,10 +367,10 @@ function drawISSModelAtPosition (latitude, longitude, altitude) {
     var config = {dirPath: 'images/'};
     var colladaLoader = new WorldWind.ColladaLoader(position, config);
     colladaLoader.load("iss.dae", function (colladaModel) {
-        colladaModel.scale = 1500;
-        colladaModel.xRotation = 0;
+        colladaModel.scale = 1100;
+        colladaModel.xRotation = -latitude + 90 + 15;
         colladaModel.yRotation = 0;
-        colladaModel.zRotation = 0;
+        colladaModel.zRotation = longitude + 90;
         ISSModelLayer.addRenderable(colladaModel);
     });
 }
