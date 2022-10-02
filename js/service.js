@@ -1,6 +1,6 @@
 var SERVICE_URLS = {
-    current: '/api/current',
-    history: '/api/positions?ts=',
-    visibility: '/api/visibility',
-    groundStations: '/api/ground-stations'
+    current: 'http://34.159.45.100/api/current',
+    history: 'http://34.159.45.100/api/positions?ts=',
+    visibility: 'http://34.159.45.100/api/visibility',
+    groundStations: 'http://34.159.45.100/api/ground-stations'
 }
