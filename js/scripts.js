@@ -290,6 +290,7 @@ function setOnAddressLookupListener () {
 }
 
 function _translateAddressToLatLong (address, cb) {
+    POSITION_STACK_API_KEY = '7a994a17acc88da115420ad5df88ddb8';
     var url = `http://api.positionstack.com/v1/forward?access_key=${POSITION_STACK_API_KEY}&query=${address}`;
     fetch(url)
     .then(response => response.json())
